@@ -8,22 +8,53 @@ fn main() {
         for line in lines {
             if let Ok(ip) = line {
                 // create an empty vec
-                let mut vec: Vec<char> = Vec::new();
-                for char in ip.chars() {
-                    if char.is_numeric() {
-                        vec.push(char);
+                let mut numbers_and_positions: Vec<(i32, i32)> = Vec::new();
+
+                let number_names = [
+                    ("zero", 0),
+                    ("one", 1),
+                    ("two", 2),
+                    ("three", 3),
+                    ("four", 4),
+                    ("five", 5),
+                    ("six", 6),
+                    ("seven", 7),
+                    ("eight", 8),
+                    ("nine", 9),
+                ];
+                for (number_name, number) in number_names {
+                    let option_position = ip.find(number_name);
+                    if let Some(position) = option_position {
+                        //cast position to i32
+                        let position = position as i32;
+                        numbers_and_positions.push((number, position));
                     }
                 }
-                //get first number in vec
-                let first = vec[0];
-                //get last number in vec
-                let last = vec[vec.len() - 1];
+
+                for (i, char) in ip.chars().enumerate() {
+                    if char.is_numeric() {
+                        numbers_and_positions.push((char.to_digit(10).unwrap() as i32, i as i32));
+                    }
+                }
+                //find the number with the lowest position
+                let mut lowest_position_number = 0;
+                let mut max_position_number = 0;
+                let mut lowest_position = 1000;
+                let mut max_position = 0;
+                for (number, position) in numbers_and_positions {
+                    if position < lowest_position {
+                        lowest_position = position;
+                        lowest_position_number = number;
+                    }
+                    if position > max_position {
+                        max_position = position;
+                        max_position_number = number;
+                    }
+                }
                 // concatenate first and last
-                let first_last = format!("{}{}", first, last);
-                // convert to int
-                let first_last_int = first_last.parse::<i32>().unwrap();
+                let first_last = format!("{}{}", lowest_position_number, max_position_number);
                 // add to current sum
-                current_sum = current_sum + first_last_int;
+                current_sum = current_sum + first_last.parse::<i32>().unwrap();
             }
         }
         println!("Current sum is: {}", current_sum);
