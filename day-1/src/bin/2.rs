@@ -53,6 +53,8 @@ fn main() {
                 }
                 // concatenate first and last
                 let first_last = format!("{}{}", lowest_position_number, max_position_number);
+
+                println!("First and last: {}", first_last);
                 // add to current sum
                 current_sum = current_sum + first_last.parse::<i32>().unwrap();
             }
