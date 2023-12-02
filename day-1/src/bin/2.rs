@@ -24,10 +24,9 @@ fn main() {
                 ];
                 for (number_name, number) in number_names {
                     let option_position = ip.find(number_name);
-                    if let Some(position) = option_position {
-                        //cast position to i32
-                        let position = position as i32;
-                        numbers_and_positions.push((number, position));
+                    let v: Vec<_> = ip.match_indices(number_name).collect();
+                    for (index, _) in v {
+                        numbers_and_positions.push((number, index as i32));
                     }
                 }
 
@@ -42,11 +41,12 @@ fn main() {
                 let mut lowest_position = 1000;
                 let mut max_position = 0;
                 for (number, position) in numbers_and_positions {
-                    if position < lowest_position {
+                    println!("Number: {}, Position: {}", number, position);
+                    if position <= lowest_position {
                         lowest_position = position;
                         lowest_position_number = number;
                     }
-                    if position > max_position {
+                    if position >= max_position {
                         max_position = position;
                         max_position_number = number;
                     }
