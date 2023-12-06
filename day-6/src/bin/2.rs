@@ -4,7 +4,9 @@ use std::path::Path;
 
 type Race = (isize, isize);
 fn main() {
-    let mut races: Vec<Race> = Vec::new();
+    let mut race: Race = (0, 0);
+    let mut accumulated_string_distance = String::new();
+    let mut accumulated_string_time = String::new();
     if let Ok(lines) = read_lines("./input.txt") {
         // vector of integers
         for (i, line) in lines.enumerate() {
@@ -13,35 +15,38 @@ fn main() {
                     let strings = row.split_whitespace().collect::<Vec<&str>>();
                     for (i, string) in strings.iter().enumerate() {
                         if i != 0 {
-                            races.push((string.parse::<isize>().unwrap(), 0));
+                            accumulated_string_time.push_str(string);
                         }
                     }
+                    race.0 = accumulated_string_time.parse::<isize>().unwrap();
                 } else {
                     let strings = row.split_whitespace().collect::<Vec<&str>>();
                     for (i, string) in strings.iter().enumerate() {
                         if i != 0 {
-                            races[i - 1].1 = string.parse::<isize>().unwrap();
-                            println!(
-                                "{}",
-                                races[i - 1].0.to_string() + " " + &races[i - 1].1.to_string()
-                            );
+                            accumulated_string_distance.push_str(string);
                         }
                     }
+                    race.1 = accumulated_string_distance.parse::<isize>().unwrap();
                 }
             }
         }
     }
-    let mut multiplier = 1;
-    for (duration, record) in races {
-        let mut counter = 0;
-        for i in 0..duration {
-            if (i * (duration - i)) > record {
-                counter += 1;
-            }
-        }
-        multiplier *= counter;
-    }
-    println!("{}", multiplier);
+    let mut counter = 0;
+
+    // solve quadratic equation
+    // - x^2 + x.race.0 - (1 + race.1) = 0
+    // x = (-b +- sqrt(b^2 - 4ac)) / 2a
+    /*
+    let first_root = (-race.0 as f64
+        + f64::sqrt(race.0.pow(2) as f64 + 4 as f64 * (-1 + race.1) as f64))
+        / -2 as f64;
+    let second_root = (-race.0 as f64
+        - f64::sqrt(race.0.pow(2) as f64 + 4 as f64 * (-1 + race.1) as f64))
+        / -2 as f64; */
+
+    println!("{}", race.0);
+    println!("{}", race.1);
+    println!("{}", 20000000 * (race.0 - 20000000) > race.1)
 }
 
 fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
